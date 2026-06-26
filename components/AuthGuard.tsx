@@ -12,7 +12,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [checked, setChecked] = useState(false)
 
-  const isPublic = PUBLIC_PATHS.includes(pathname)
+  const normalizedPath = pathname.replace(/\/$/, '') || '/'
+  const isPublic = PUBLIC_PATHS.includes(normalizedPath)
 
   useEffect(() => {
     const session = getSession()
