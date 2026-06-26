@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Nav from '@/components/Nav'
+import AuthGuard from '@/components/AuthGuard'
 
 export const metadata: Metadata = {
   title: 'IntentionalOS',
@@ -11,10 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="h-full">
       <body className="min-h-full flex" style={{ background: 'var(--bg)' }}>
-        <Nav />
-        <main className="flex-1 ml-48 min-h-full">
-          {children}
-        </main>
+        <AuthGuard>{children}</AuthGuard>
       </body>
     </html>
   )

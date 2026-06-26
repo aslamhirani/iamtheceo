@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { getSession, signOut } from '@/lib/auth'
 
 const links = [
   { href: '/', label: 'Overview', abbr: 'OV' },
@@ -14,12 +15,21 @@ const links = [
 
 export default function Nav() {
   const pathname = usePathname()
+  const router = useRouter()
+  const session = getSession()
+
+  const handleSignOut = () => {
+    signOut()
+    router.replace('/login')
+  }
+
   return (
     <nav className="fixed left-0 top-0 h-full w-48 border-r flex flex-col pt-10 pb-8 px-6" style={{ borderColor: 'var(--border)', background: 'var(--bg)' }}>
       <div className="mb-10">
         <p className="sans text-xs tracking-widest uppercase" style={{ color: 'var(--muted)' }}>IntentionalOS</p>
         <p className="sans text-xs mt-0.5" style={{ color: 'var(--muted)' }}>v2.0</p>
       </div>
+
       <ul className="flex flex-col gap-1 flex-1">
         {links.map(l => {
           const active = pathname === l.href
@@ -27,7 +37,7 @@ export default function Nav() {
             <li key={l.href}>
               <Link
                 href={l.href}
-                className="flex items-center gap-3 py-2 px-2 sans text-sm transition-colors"
+                className="flex items-center gap-3 py-2 sans text-sm transition-opacity hover:opacity-70"
                 style={{
                   color: active ? 'var(--fg)' : 'var(--muted)',
                   borderLeft: active ? '2px solid var(--fg)' : '2px solid transparent',
@@ -41,9 +51,20 @@ export default function Nav() {
           )
         })}
       </ul>
-      <div className="sans text-xs" style={{ color: 'var(--muted)' }}>
-        <p>Protect the floor.</p>
-        <p>Defend the shield.</p>
+
+      <div className="border-t pt-4" style={{ borderColor: 'var(--border)' }}>
+        {session && (
+          <p className="sans text-xs mb-3 truncate" style={{ color: 'var(--muted)' }} title={session.email}>
+            {session.email}
+          </p>
+        )}
+        <button
+          onClick={handleSignOut}
+          className="sans text-xs hover:opacity-70 transition-opacity block"
+          style={{ color: 'var(--muted)' }}
+        >
+          Sign out
+        </button>
       </div>
     </nav>
   )
