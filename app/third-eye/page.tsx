@@ -8,13 +8,13 @@ import PillarBadge from '@/components/PillarBadge'
 const PILLARS: LifePillar[] = ['health', 'learning', 'finance', 'relationships', 'community']
 
 const BLUEPRINT_PHASES = [
-  'Define the structural shift and its irreversibility',
-  'Map all dependencies and stakeholders affected',
+  'Define the change and why it cannot be undone',
+  'List everyone and everything affected',
   'Identify the point of no return',
-  'Prepare contingency protocols',
-  'Consult expert lineage and empirical grounding',
-  'Write the activation criteria',
-  'Final psychological readiness audit',
+  'Plan what you will do if things go wrong',
+  'Ground it in research or expert guidance',
+  'Write the exact criteria that will trigger activation',
+  'Honest self-assessment — are you truly ready?',
 ]
 
 function NewLeapModal({ onClose, onAdd }: { onClose: () => void; onAdd: (leap: QuantumLeap) => void }) {
@@ -37,24 +37,24 @@ function NewLeapModal({ onClose, onAdd }: { onClose: () => void; onAdd: (leap: Q
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(250,250,248,0.95)' }}>
       <div className="w-full max-w-xl p-10 border" style={{ borderColor: 'var(--border)', background: 'var(--bg)' }}>
-        <p className="sans text-xs tracking-widest uppercase mb-6" style={{ color: 'var(--muted)' }}>Initiate Quantum Leap</p>
+        <p className="sans text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--muted)' }}>Start a Big Bet</p>
         <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
-          A Quantum Leap is a structural, irreversible shift. It requires a mandatory 7-day blueprinting cycle before activation. You are limited to one per quarter.
+          A Big Bet is a major, hard-to-reverse life decision. You are limited to one per quarter. Before it goes live, you will spend 7 days thinking it through carefully.
         </p>
         <div className="flex flex-col gap-4">
           <div>
-            <label className="sans text-xs block mb-1" style={{ color: 'var(--muted)' }}>Leap Title</label>
+            <label className="sans text-xs block mb-1" style={{ color: 'var(--muted)' }}>What is the change?</label>
             <input
               className="w-full border p-2 text-sm"
               style={{ borderColor: 'var(--border)', background: 'var(--bg)' }}
-              placeholder="e.g. Full asset reallocation to index funds"
+              placeholder="e.g. Move all investments to index funds"
               value={title}
               onChange={e => setTitle(e.target.value)}
               autoFocus
             />
           </div>
           <div>
-            <label className="sans text-xs block mb-1" style={{ color: 'var(--muted)' }}>Life Pillar</label>
+            <label className="sans text-xs block mb-1" style={{ color: 'var(--muted)' }}>Which life area?</label>
             <select
               className="w-full border p-2 text-sm sans"
               style={{ borderColor: 'var(--border)', background: 'var(--bg)' }}
@@ -72,7 +72,7 @@ function NewLeapModal({ onClose, onAdd }: { onClose: () => void; onAdd: (leap: Q
             className="sans text-xs border px-4 py-2 hover:opacity-70 disabled:opacity-30"
             style={{ borderColor: 'var(--fg)' }}
           >
-            Begin 7-Day Blueprinting
+            Start 7-Day Review
           </button>
           <button onClick={onClose} className="sans text-xs px-4 py-2 hover:opacity-70" style={{ color: 'var(--muted)' }}>
             Cancel
@@ -102,7 +102,7 @@ export default function ThirdEye() {
   }
 
   return (
-    <div className="p-12 max-w-3xl">
+    <div className="p-10 max-w-3xl">
       {adding && (
         <NewLeapModal
           onClose={() => setAdding(false)}
@@ -113,22 +113,26 @@ export default function ThirdEye() {
         />
       )}
 
-      <p className="sans text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--muted)' }}>The Third Eye</p>
-      <h1 className="sans text-3xl font-light mb-2">Quantum Leap</h1>
-      <p className="text-sm mb-10" style={{ color: 'var(--muted)' }}>
-        Infrequent, structural shifts requiring extensive psychological preparation. One per quarter. Seven-day mandatory blueprinting before activation.
-      </p>
+      <div className="mb-8">
+        <p className="sans text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--muted)' }}>Big Bet · Third Eye</p>
+        <h1 className="sans text-2xl font-light mb-2">Quarterly Structural Change</h1>
+        <p className="text-sm" style={{ color: 'var(--muted)' }}>
+          One significant, hard-to-reverse decision per quarter. Not a goal — a structural shift in how you live. The 7-day review process ensures you act from clarity, not impulse.
+        </p>
+      </div>
 
       {!activeLeap ? (
-        <div className="border p-8 mb-8 text-center" style={{ borderColor: 'var(--border)' }}>
-          <p className="sans text-sm mb-2" style={{ color: 'var(--muted)' }}>No active Quantum Leap — {currentQuarter}</p>
-          <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>One structural shift available this quarter.</p>
+        <div className="border p-8 mb-8" style={{ borderColor: 'var(--border)' }}>
+          <p className="sans text-sm font-medium mb-1">No active Big Bet — {currentQuarter}</p>
+          <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
+            You have one slot available this quarter. Only use it for a decision that genuinely changes the structure of your life.
+          </p>
           <button
             onClick={() => setAdding(true)}
             className="sans text-xs border px-4 py-2 hover:opacity-70"
             style={{ borderColor: 'var(--fg)' }}
           >
-            Initiate Leap
+            Start a Big Bet
           </button>
         </div>
       ) : (
@@ -139,17 +143,26 @@ export default function ThirdEye() {
               <h2 className="sans text-xl font-light">{activeLeap.title}</h2>
             </div>
             <div className="flex gap-4 mt-2">
-              <span className="sans text-xs capitalize" style={{ color: 'var(--muted)' }}>Status: {activeLeap.status}</span>
+              <span className="sans text-xs capitalize" style={{ color: 'var(--muted)' }}>
+                {activeLeap.status === 'blueprinting' ? 'In review' : activeLeap.status}
+              </span>
               <span className="sans text-xs" style={{ color: 'var(--muted)' }}>Quarter: {activeLeap.quarterKey}</span>
-              <span className="sans text-xs" style={{ color: 'var(--muted)' }}>Blueprint started: {activeLeap.blueprintingStart}</span>
+              <span className="sans text-xs" style={{ color: 'var(--muted)' }}>Review started: {activeLeap.blueprintingStart}</span>
             </div>
           </div>
 
           {activeLeap.status === 'blueprinting' && (
             <>
-              <p className="sans text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--muted)' }}>
-                Blueprinting Cycle — Day {blueprintDay}/7
-              </p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="sans text-xs tracking-widest uppercase" style={{ color: 'var(--muted)' }}>
+                  7-Day Review — Day {blueprintDay}/7
+                </p>
+                {!canActivate && (
+                  <p className="sans text-xs" style={{ color: 'var(--muted)' }}>
+                    {7 - blueprintDay} day{7 - blueprintDay !== 1 ? 's' : ''} remaining
+                  </p>
+                )}
+              </div>
               <div className="flex gap-1 mb-6">
                 {Array.from({ length: 7 }).map((_, i) => (
                   <div
@@ -166,21 +179,21 @@ export default function ThirdEye() {
               <div className="flex flex-col gap-px mb-6" style={{ background: 'var(--border)' }}>
                 {BLUEPRINT_PHASES.map((phase, i) => {
                   const note = activeLeap.preparationNotes[i] || ''
-                  const isComplete = i < blueprintDay
+                  const isUnlocked = i < blueprintDay
                   return (
                     <div key={i} className="p-5" style={{ background: 'var(--bg)' }}>
                       <div className="flex gap-3 items-start">
                         <span
-                          className="sans text-xs mt-0.5 shrink-0"
-                          style={{ color: isComplete ? 'var(--fg)' : 'var(--muted)' }}
+                          className="sans text-xs mt-0.5 shrink-0 w-10"
+                          style={{ color: isUnlocked ? 'var(--fg)' : 'var(--muted)' }}
                         >
                           Day {i + 1}
                         </span>
                         <div className="flex-1">
-                          <p className="sans text-sm" style={{ color: isComplete ? 'var(--fg)' : 'var(--muted)' }}>
+                          <p className="sans text-sm" style={{ color: isUnlocked ? 'var(--fg)' : 'var(--muted)' }}>
                             {phase}
                           </p>
-                          {isComplete && (
+                          {isUnlocked && (
                             editingNote?.index === i ? (
                               <div className="mt-2">
                                 <textarea
@@ -212,6 +225,9 @@ export default function ThirdEye() {
                               </div>
                             )
                           )}
+                          {!isUnlocked && (
+                            <p className="sans text-xs mt-1" style={{ color: 'var(--muted)' }}>Unlocks on day {i + 1}</p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -220,16 +236,21 @@ export default function ThirdEye() {
               </div>
 
               {canActivate ? (
-                <button
-                  onClick={() => updateLeap(activeLeap.id, { status: 'active', activationDate: today() })}
-                  className="sans text-xs border px-4 py-2 hover:opacity-70"
-                  style={{ borderColor: 'var(--fg)' }}
-                >
-                  Activate Leap
-                </button>
+                <div>
+                  <p className="sans text-xs mb-3" style={{ color: 'var(--muted)' }}>
+                    Review complete. You can now activate this bet.
+                  </p>
+                  <button
+                    onClick={() => updateLeap(activeLeap.id, { status: 'active', activationDate: today() })}
+                    className="sans text-xs border px-4 py-2 hover:opacity-70"
+                    style={{ borderColor: 'var(--fg)' }}
+                  >
+                    Activate Big Bet
+                  </button>
+                </div>
               ) : (
                 <p className="sans text-xs" style={{ color: 'var(--muted)' }}>
-                  Activation available in {7 - blueprintDay} day{7 - blueprintDay !== 1 ? 's' : ''}
+                  Come back each day to reflect on each question. Activation unlocks after all 7 days.
                 </p>
               )}
             </>
@@ -237,16 +258,16 @@ export default function ThirdEye() {
 
           {activeLeap.status === 'active' && (
             <div>
-              <p className="sans text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--muted)' }}>Leap Active</p>
+              <p className="sans text-xs tracking-widest uppercase mb-3" style={{ color: 'var(--muted)' }}>Active</p>
               <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
-                Activated on {activeLeap.activationDate}. Execute the structural shift with full commitment.
+                Activated on {activeLeap.activationDate}. Execute this change fully. Mark it complete when done.
               </p>
               <button
                 onClick={() => updateLeap(activeLeap.id, { status: 'completed' })}
                 className="sans text-xs border px-4 py-2 hover:opacity-70"
                 style={{ borderColor: 'var(--fg)' }}
               >
-                Mark as Completed
+                Mark Complete
               </button>
             </div>
           )}
@@ -255,7 +276,7 @@ export default function ThirdEye() {
 
       {completedLeaps.length > 0 && (
         <div>
-          <p className="sans text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--muted)' }}>Completed Leaps</p>
+          <p className="sans text-xs tracking-widest uppercase mb-3" style={{ color: 'var(--muted)' }}>Past Bets</p>
           <div className="flex flex-col gap-px" style={{ background: 'var(--border)' }}>
             {completedLeaps.map(l => (
               <div key={l.id} className="p-4 flex items-center gap-3" style={{ background: 'var(--bg)' }}>

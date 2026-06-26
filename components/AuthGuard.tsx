@@ -38,14 +38,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (isPublic) {
-    // Auth pages: full-screen, no nav
     return <>{children}</>
   }
 
   return (
     <>
       <Nav />
-      <main className="flex-1 ml-48 min-h-full">
+      <main className="flex-1 ml-52 min-h-full">
         {children}
       </main>
     </>
