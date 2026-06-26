@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #FAFAF8;
+  --fg: #0A0A0A;
+  --border: #E2E2DE;
+  --muted: #6B6B68;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, nav, label, button, .sans {
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+textarea:focus, input:focus {
+  outline: 1px solid var(--fg);
+  outline-offset: -1px;
+}
+
+main {
+  animation: fadeIn 0.12s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.shield-clip {
+  clip-path: polygon(50% 0%, 93% 15%, 100% 50%, 93% 80%, 50% 100%, 7% 80%, 0% 50%, 7% 15%);
+}
