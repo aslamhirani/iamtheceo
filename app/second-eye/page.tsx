@@ -6,7 +6,7 @@ import { BaselineItem } from '@/lib/types'
 import Shield from '@/components/Shield'
 import PillarBadge from '@/components/PillarBadge'
 
-function BaselineCheckModal({ item, onClose, onLog }: {
+function CheckModal({ item, onClose, onLog }: {
   item: BaselineItem
   onClose: () => void
   onLog: (met: boolean, reflection: string) => void
@@ -15,51 +15,49 @@ function BaselineCheckModal({ item, onClose, onLog }: {
   const [met, setMet] = useState<boolean | null>(null)
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(250,250,248,0.95)' }}>
-      <div className="w-full max-w-xl p-10 border" style={{ borderColor: 'var(--border)', background: 'var(--bg)' }}>
-        <p className="sans text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--muted)' }}>Baseline Check-In</p>
-        <div className="flex items-center gap-2 mb-4">
+    <div style={{
+      position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'rgba(248,247,244,0.94)', zIndex: 50
+    }}>
+      <div className="card" style={{ width: '100%', maxWidth: 520, padding: 36 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
           <PillarBadge pillar={item.pillar} />
-          <p className="sans text-lg font-light">{item.label}</p>
+          <p className="sans" style={{ fontSize: 16, fontWeight: 400 }}>{item.label}</p>
         </div>
-        <p className="text-sm mb-2" style={{ color: 'var(--muted)' }}>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>
           Threshold: <em>{item.threshold}</em>
         </p>
-        <p className="text-sm mb-6" style={{ color: 'var(--fg)' }}>{item.reflectionPrompt}</p>
+        <p style={{ fontSize: 14, marginBottom: 20, lineHeight: 1.7 }}>{item.reflectionPrompt}</p>
 
-        <div className="flex gap-3 mb-6">
-          <button
-            onClick={() => setMet(true)}
-            className="sans text-xs border px-4 py-2 flex-1 transition-opacity"
-            style={{
-              borderColor: met === true ? 'var(--fg)' : 'var(--border)',
-              background: met === true ? 'var(--fg)' : 'transparent',
-              color: met === true ? 'var(--bg)' : 'var(--fg)',
-            }}
-          >
-            Threshold Met
-          </button>
-          <button
-            onClick={() => setMet(false)}
-            className="sans text-xs border px-4 py-2 flex-1 transition-opacity"
-            style={{
-              borderColor: met === false ? 'var(--fg)' : 'var(--border)',
-              background: met === false ? 'var(--fg)' : 'transparent',
-              color: met === false ? 'var(--bg)' : 'var(--fg)',
-            }}
-          >
-            Threshold Not Met
-          </button>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          {[true, false].map(val => (
+            <button
+              key={String(val)}
+              onClick={() => setMet(val)}
+              className="btn"
+              style={{
+                flex: 1, justifyContent: 'center',
+                background: met === val ? 'var(--fg)' : 'transparent',
+                color: met === val ? 'var(--bg)' : 'var(--fg)',
+                borderColor: met === val ? 'var(--fg)' : 'var(--border-2)',
+              }}
+            >
+              {val ? 'Met' : 'Not met'}
+            </button>
+          ))}
         </div>
 
         {met !== null && (
-          <div className="mb-4">
-            <p className="sans text-xs mb-2" style={{ color: 'var(--muted)' }}>
-              {met ? 'What made today a defended day for this baseline?' : 'What slipped, and what would have held it?'}
+          <div style={{ marginBottom: 16 }}>
+            <p className="sans" style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 6 }}>
+              {met ? 'What made today a defended day for this habit?' : 'What slipped, and what would have held it?'}
             </p>
             <textarea
-              className="w-full border p-3 text-sm resize-none"
-              style={{ borderColor: 'var(--border)', background: 'var(--bg)', minHeight: 100 }}
+              style={{
+                width: '100%', border: '1px solid var(--border)', borderRadius: 6,
+                padding: '10px 12px', fontSize: 14, fontFamily: 'Georgia, serif',
+                background: 'var(--bg-card)', resize: 'none', minHeight: 100,
+              }}
               placeholder="Be honest and specific..."
               value={reflection}
               onChange={e => setReflection(e.target.value)}
@@ -68,18 +66,15 @@ function BaselineCheckModal({ item, onClose, onLog }: {
           </div>
         )}
 
-        <div className="flex gap-3">
+        <div style={{ display: 'flex', gap: 8 }}>
           <button
             onClick={() => { if (met !== null && reflection.trim()) onLog(met, reflection.trim()) }}
             disabled={met === null || !reflection.trim()}
-            className="sans text-xs border px-4 py-2 hover:opacity-70 disabled:opacity-30"
-            style={{ borderColor: 'var(--fg)' }}
+            className="btn btn-primary"
           >
-            Record
+            Save
           </button>
-          <button onClick={onClose} className="sans text-xs px-4 py-2 hover:opacity-70" style={{ color: 'var(--muted)' }}>
-            Cancel
-          </button>
+          <button onClick={onClose} className="btn btn-ghost">Cancel</button>
         </div>
       </div>
     </div>
@@ -91,31 +86,29 @@ export default function SecondEye() {
   const [checking, setChecking] = useState<BaselineItem | null>(null)
   const todayStr = today()
 
-  const todayBaselines = state.baselines.map(b => {
-    const log = b.logs.find(l => l.date === todayStr)
-    return { ...b, todayLog: log ?? null }
-  })
+  const todayBaselines = state.baselines.map(b => ({
+    ...b,
+    todayLog: b.logs.find(l => l.date === todayStr) ?? null,
+  }))
 
   const missedToday = todayBaselines.filter(b => b.todayLog?.met === false).length
   const metToday = todayBaselines.filter(b => b.todayLog?.met === true).length
+  const notYet = todayBaselines.filter(b => !b.todayLog).length
   const shieldStatus = missedToday === 0 ? 'defended' as const : missedToday === 1 ? 'partial' as const : 'breached' as const
 
   const sortedDates = [...new Set(state.baselines.flatMap(b => b.logs.map(l => l.date)))].sort()
   let streak = 0
   for (let i = sortedDates.length - 1; i >= 0; i--) {
     const date = sortedDates[i]
-    const allMet = state.baselines.every(b => {
-      const log = b.logs.find(l => l.date === date)
-      return log?.met !== false
-    })
+    const allMet = state.baselines.every(b => b.logs.find(l => l.date === date)?.met !== false)
     if (allMet) streak++
     else break
   }
 
   return (
-    <div className="p-12 max-w-3xl">
+    <div style={{ padding: '40px 48px', maxWidth: 760 }}>
       {checking && (
-        <BaselineCheckModal
+        <CheckModal
           item={checking}
           onClose={() => setChecking(null)}
           onLog={(met, reflection) => {
@@ -125,87 +118,84 @@ export default function SecondEye() {
         />
       )}
 
-      <p className="sans text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--muted)' }}>The Second Eye</p>
-      <h1 className="sans text-3xl font-light mb-2">Consistency Shield</h1>
-      <p className="text-sm mb-10" style={{ color: 'var(--muted)' }}>
-        Track preservation of the floor, not performance maximization. The shield measures how many consecutive days you prevent your fundamental baselines from dropping below acceptable thresholds.
-      </p>
+      <div style={{ marginBottom: 32 }}>
+        <p className="sans" style={{ fontSize: 12, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+          Habits & Shield · Second Eye
+        </p>
+        <h1 className="sans" style={{ fontSize: 24, fontWeight: 300, marginBottom: 8 }}>Daily Consistency</h1>
+        <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>
+          The shield tracks how many consecutive days you protect every baseline habit. Not performance — protection of the floor.
+        </p>
+      </div>
 
-      <div className="flex gap-12 mb-12 items-start">
+      {/* Shield + stats */}
+      <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start', marginBottom: 36 }}>
         <Shield status={shieldStatus} daysDefended={streak} />
-        <div className="flex-1 pt-2">
-          <div className="grid grid-cols-3 gap-px mb-4" style={{ background: 'var(--border)' }}>
-            <div className="p-4" style={{ background: 'var(--bg)' }}>
-              <p className="sans text-2xl font-light">{metToday}</p>
-              <p className="sans text-xs mt-1" style={{ color: 'var(--muted)' }}>Met today</p>
-            </div>
-            <div className="p-4" style={{ background: 'var(--bg)' }}>
-              <p className="sans text-2xl font-light">{missedToday}</p>
-              <p className="sans text-xs mt-1" style={{ color: 'var(--muted)' }}>Missed today</p>
-            </div>
-            <div className="p-4" style={{ background: 'var(--bg)' }}>
-              <p className="sans text-2xl font-light">{todayBaselines.filter(b => !b.todayLog).length}</p>
-              <p className="sans text-xs mt-1" style={{ color: 'var(--muted)' }}>Not yet logged</p>
-            </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+            {[
+              { value: metToday, label: 'Met today' },
+              { value: missedToday, label: 'Missed' },
+              { value: notYet, label: 'Pending' },
+            ].map(({ value, label }) => (
+              <div key={label} className="card" style={{ padding: '14px 16px' }}>
+                <p className="sans" style={{ fontSize: 24, fontWeight: 300 }}>{value}</p>
+                <p className="sans" style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>{label}</p>
+              </div>
+            ))}
           </div>
-          <p className="text-sm" style={{ color: 'var(--muted)' }}>
-            {shieldStatus === 'defended' && metToday > 0 && 'Shield defended today. Every threshold met.'}
-            {shieldStatus === 'defended' && metToday === 0 && 'Begin your baseline check-ins below.'}
-            {shieldStatus === 'partial' && 'One threshold missed. Shield degraded but not broken.'}
-            {shieldStatus === 'breached' && 'Two or more thresholds missed. The floor has dropped.'}
+          <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.6 }}>
+            {shieldStatus === 'defended' && metToday > 0 && 'Shield defended. Every threshold met.'}
+            {shieldStatus === 'defended' && metToday === 0 && 'Begin your check-ins below.'}
+            {shieldStatus === 'partial' && 'One threshold missed. Shield weakened but not broken.'}
+            {shieldStatus === 'breached' && 'Two or more missed. The floor has dropped — reflect on what slipped.'}
           </p>
         </div>
       </div>
 
-      <div>
-        <p className="sans text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--muted)' }}>Today&apos;s Baseline Check-Ins</p>
-        <div className="flex flex-col gap-px" style={{ background: 'var(--border)' }}>
-          {todayBaselines.map(item => {
-            const logged = !!item.todayLog
-            const met = item.todayLog?.met
-            return (
-              <div key={item.id} className="p-6" style={{ background: 'var(--bg)' }}>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <PillarBadge pillar={item.pillar} />
-                      <p className="sans text-sm font-medium">{item.label}</p>
-                      {logged && (
-                        <span
-                          className="sans text-xs px-2 py-0.5 border"
-                          style={{
-                            borderColor: met ? 'var(--fg)' : 'var(--border)',
-                            color: met ? 'var(--fg)' : 'var(--muted)',
-                          }}
-                        >
-                          {met ? 'Met' : 'Missed'}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs italic mb-1" style={{ color: 'var(--muted)' }}>&ldquo;{item.reflectionPrompt}&rdquo;</p>
-                    <p className="sans text-xs" style={{ color: 'var(--muted)' }}>Threshold: {item.threshold}</p>
+      {/* Habit list */}
+      <p className="sans" style={{ fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 12 }}>
+        Today&apos;s Habits — {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {todayBaselines.map(item => {
+          const logged = !!item.todayLog
+          const met = item.todayLog?.met
+          return (
+            <div key={item.id} className="card" style={{ padding: '16px 20px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <PillarBadge pillar={item.pillar} />
+                    <p className="sans" style={{ fontSize: 14, fontWeight: 500 }}>{item.label}</p>
+                    {logged && (
+                      <span className="sans" style={{
+                        fontSize: 11, padding: '1px 8px', borderRadius: 4,
+                        background: met ? 'var(--fg)' : 'var(--border)',
+                        color: met ? 'var(--bg)' : 'var(--muted)',
+                      }}>
+                        {met ? 'Met' : 'Missed'}
+                      </span>
+                    )}
                   </div>
-                  {!logged && (
-                    <button
-                      onClick={() => setChecking(item)}
-                      className="sans text-xs border px-3 py-1 hover:opacity-70 transition-opacity shrink-0"
-                      style={{ borderColor: 'var(--fg)' }}
-                    >
-                      Check In
-                    </button>
-                  )}
+                  <p style={{ fontSize: 13, color: 'var(--muted)', fontStyle: 'italic' }}>{item.threshold}</p>
                 </div>
-                {logged && item.todayLog && (
-                  <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--border)' }}>
-                    <p className="text-sm italic" style={{ color: 'var(--muted)' }}>
-                      &ldquo;{item.todayLog.reflection}&rdquo;
-                    </p>
-                  </div>
+                {!logged && (
+                  <button onClick={() => setChecking(item)} className="btn btn-secondary" style={{ flexShrink: 0 }}>
+                    Check in
+                  </button>
                 )}
               </div>
-            )
-          })}
-        </div>
+              {logged && item.todayLog && (
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border)' }}>
+                  <p style={{ fontSize: 13, color: 'var(--muted)', fontStyle: 'italic', lineHeight: 1.6 }}>
+                    &ldquo;{item.todayLog.reflection}&rdquo;
+                  </p>
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

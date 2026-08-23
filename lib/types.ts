@@ -1,11 +1,23 @@
-export type LifePillar = 'health' | 'learning' | 'finance' | 'relationships' | 'community'
+export type LifePillar = 'health' | 'mind' | 'purpose' | 'relationships' | 'finance' | 'character' | 'spirit'
 
 export const PILLAR_LABELS: Record<LifePillar, string> = {
-  health: 'Health & Longevity',
-  learning: 'Learning & Focus',
-  finance: 'Finance',
+  health:        'Physical Health',
+  mind:          'Mental Health & Happiness',
+  purpose:       'Meaning & Purpose',
+  relationships: 'Close Relationships',
+  finance:       'Financial Stability',
+  character:     'Character & Virtue',
+  spirit:        'Spiritual Wellbeing',
+}
+
+export const PILLAR_SHORT: Record<LifePillar, string> = {
+  health:        'Health',
+  mind:          'Mind',
+  purpose:       'Purpose',
   relationships: 'Relationships',
-  community: 'Community Give-Back',
+  finance:       'Finance',
+  character:     'Character',
+  spirit:        'Spirit',
 }
 
 export interface MicroAdjustment {

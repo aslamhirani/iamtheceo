@@ -1,10 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #FAFAF8;
-  --fg: #0A0A0A;
-  --border: #E2E2DE;
-  --muted: #6B6B68;
+  --bg:        #F8F7F4;
+  --bg-card:   #FFFFFF;
+  --bg-hover:  #F2F1EE;
+  --fg:        #1A1A18;
+  --fg-2:      #2E2E2C;
+  --border:    #E5E4DF;
+  --border-2:  #D4D3CE;
+  --muted:     #7A7A76;
+  --accent:    #2563EB;
+
+  /* Pillar palette — soft tints */
+  --pillar-health:        #D1FAE5;
+  --pillar-health-fg:     #065F46;
+  --pillar-mind:          #DBEAFE;
+  --pillar-mind-fg:       #1E40AF;
+  --pillar-purpose:       #EDE9FE;
+  --pillar-purpose-fg:    #5B21B6;
+  --pillar-relationships: #FCE7F3;
+  --pillar-relationships-fg: #9D174D;
+  --pillar-finance:       #FEF3C7;
+  --pillar-finance-fg:    #92400E;
+  --pillar-character:     #F0FDF4;
+  --pillar-character-fg:  #14532D;
+  --pillar-spirit:        #FFF7ED;
+  --pillar-spirit-fg:     #7C2D12;
 }
 
 * {
@@ -16,25 +37,73 @@ html, body {
   color: var(--fg);
   font-family: 'Georgia', 'Times New Roman', serif;
   -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
-h1, h2, h3, h4, nav, label, button, .sans {
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  letter-spacing: -0.02em;
+h1, h2, h3, h4, nav, label, button, .sans, select, input {
+  font-family: -apple-system, 'Helvetica Neue', 'Arial', sans-serif;
+  letter-spacing: -0.015em;
 }
 
-textarea:focus, input:focus {
-  outline: 1px solid var(--fg);
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+textarea:focus, input:focus, select:focus {
+  outline: 2px solid var(--fg);
   outline-offset: -1px;
 }
 
+/* Card */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* Button base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: -apple-system, 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+.btn:hover { opacity: 0.75; }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--border-2);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border-color: transparent;
+}
+
 main {
-  animation: fadeIn 0.12s ease-in;
+  animation: fadeIn 0.15s ease-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(3px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .shield-clip {

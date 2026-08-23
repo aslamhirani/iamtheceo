@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { KNOWLEDGE_BASE } from '@/lib/seed-data'
-import { LifePillar, PILLAR_LABELS } from '@/lib/types'
+import { LifePillar, PILLAR_LABELS, PILLAR_SHORT } from '@/lib/types'
 import PillarBadge from '@/components/PillarBadge'
 import LineageChain from '@/components/LineageChain'
 
-const PILLARS: LifePillar[] = ['health', 'learning', 'finance', 'relationships', 'community']
+const PILLARS: LifePillar[] = ['health', 'mind', 'purpose', 'relationships', 'finance', 'character', 'spirit']
 
 export default function KnowledgeBase() {
   const [filter, setFilter] = useState<LifePillar | 'all'>('all')
@@ -15,88 +15,93 @@ export default function KnowledgeBase() {
   const entries = filter === 'all' ? KNOWLEDGE_BASE : KNOWLEDGE_BASE.filter(e => e.pillar === filter)
 
   return (
-    <div className="p-12 max-w-4xl">
-      <p className="sans text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--muted)' }}>Module 1</p>
-      <h1 className="sans text-3xl font-light mb-2">Knowledge Base</h1>
-      <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>
-        Peer-reviewed blueprints with explicit provenance. Every directive traces its lineage from actionable guidance through domain expert endorsement to empirical source.
-      </p>
-      <div className="border-b mb-8 pb-4" style={{ borderColor: 'var(--border)' }}>
-        <p className="sans text-xs mb-3" style={{ color: 'var(--muted)' }}>The Lineage Chain Rule:</p>
-        <p className="sans text-xs font-mono" style={{ color: 'var(--fg)' }}>
-          Actionable Directive → Domain Expert Endorsement → Empirical Source Asset
+    <div style={{ padding: '40px 48px', maxWidth: 820 }}>
+      <div style={{ marginBottom: 32 }}>
+        <p className="sans" style={{ fontSize: 12, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+          Knowledge Base
         </p>
+        <h1 className="sans" style={{ fontSize: 24, fontWeight: 300, marginBottom: 8 }}>Expert Lineage</h1>
+        <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7, marginBottom: 16 }}>
+          Every directive traces its lineage from actionable guidance through domain expert endorsement to empirical source. Grounded in the Global Flourishing Study&apos;s 7 domains.
+        </p>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 6, padding: '10px 14px', display: 'inline-block' }}>
+          <p className="sans" style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'monospace' }}>
+            Directive → Expert → Empirical Source
+          </p>
+        </div>
       </div>
 
-      <div className="flex gap-2 mb-8 flex-wrap">
+      {/* Filter chips */}
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 24 }}>
         <button
           onClick={() => setFilter('all')}
-          className="sans text-xs border px-3 py-1 transition-colors"
+          className="btn"
           style={{
-            borderColor: filter === 'all' ? 'var(--fg)' : 'var(--border)',
             background: filter === 'all' ? 'var(--fg)' : 'transparent',
             color: filter === 'all' ? 'var(--bg)' : 'var(--muted)',
+            borderColor: filter === 'all' ? 'var(--fg)' : 'var(--border-2)',
           }}
         >
           All ({KNOWLEDGE_BASE.length})
         </button>
         {PILLARS.map(p => {
           const count = KNOWLEDGE_BASE.filter(e => e.pillar === p).length
+          if (count === 0) return null
           return (
             <button
               key={p}
               onClick={() => setFilter(p)}
-              className="sans text-xs border px-3 py-1 transition-colors capitalize"
+              className="btn"
               style={{
-                borderColor: filter === p ? 'var(--fg)' : 'var(--border)',
                 background: filter === p ? 'var(--fg)' : 'transparent',
                 color: filter === p ? 'var(--bg)' : 'var(--muted)',
+                borderColor: filter === p ? 'var(--fg)' : 'var(--border-2)',
               }}
             >
-              {PILLAR_LABELS[p].split(' ')[0]} ({count})
+              {PILLAR_SHORT[p]} ({count})
             </button>
           )
         })}
       </div>
 
-      <div className="flex flex-col gap-px" style={{ background: 'var(--border)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {entries.map(entry => {
           const isExpanded = expanded === entry.id
           return (
-            <div key={entry.id} style={{ background: 'var(--bg)' }}>
+            <div key={entry.id} className="card" style={{ overflow: 'hidden' }}>
               <button
-                className="w-full p-6 text-left hover:opacity-80 transition-opacity"
+                style={{ width: '100%', padding: '16px 20px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer' }}
                 onClick={() => setExpanded(isExpanded ? null : entry.id)}
               >
-                <div className="flex items-start gap-3">
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                   <PillarBadge pillar={entry.pillar} />
-                  <div className="flex-1">
-                    <p className="sans text-sm font-medium">{entry.expert}</p>
-                    <p className="sans text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{entry.domain}</p>
+                  <div style={{ flex: 1 }}>
+                    <p className="sans" style={{ fontSize: 14, fontWeight: 500 }}>{entry.expert}</p>
+                    <p className="sans" style={{ fontSize: 12, color: 'var(--muted)', marginTop: 1 }}>{entry.domain}</p>
                   </div>
-                  <span className="sans text-xs" style={{ color: 'var(--muted)' }}>{isExpanded ? '−' : '+'}</span>
+                  <span className="sans" style={{ fontSize: 16, color: 'var(--muted)', fontWeight: 300, marginTop: 2 }}>
+                    {isExpanded ? '−' : '+'}
+                  </span>
                 </div>
-                <p className="text-sm mt-3 leading-relaxed" style={{ color: isExpanded ? 'var(--muted)' : 'var(--fg)' }}>
-                  {entry.directive.slice(0, 100)}{entry.directive.length > 100 && !isExpanded ? '...' : ''}
+                <p style={{ fontSize: 14, marginTop: 10, lineHeight: 1.65, color: 'var(--fg)', textAlign: 'left' }}>
+                  {isExpanded ? entry.directive : entry.directive.slice(0, 120) + (entry.directive.length > 120 ? '...' : '')}
                 </p>
               </button>
               {isExpanded && (
-                <div className="px-6 pb-6">
-                  <LineageChain
-                    directive={entry.directive}
-                    expert={`${entry.expert} — ${entry.domain}`}
-                    source={entry.source}
-                  />
+                <div style={{ padding: '0 20px 20px', borderTop: '1px solid var(--border)', marginTop: 0 }}>
+                  <div style={{ paddingTop: 16 }}>
+                    <LineageChain
+                      directive={entry.directive}
+                      expert={entry.expert}
+                      source={entry.source}
+                    />
+                  </div>
                 </div>
               )}
             </div>
           )
         })}
       </div>
-
-      <p className="sans text-xs mt-8" style={{ color: 'var(--muted)' }}>
-        {entries.length} directive{entries.length !== 1 ? 's' : ''} — all entries contain verified expert and source attribution.
-      </p>
     </div>
   )
 }

@@ -5,7 +5,7 @@ import { useAppState, today, generateId, getBlueprintingDay, getQuarterKey } fro
 import { LifePillar, PILLAR_LABELS, QuantumLeap } from '@/lib/types'
 import PillarBadge from '@/components/PillarBadge'
 
-const PILLARS: LifePillar[] = ['health', 'learning', 'finance', 'relationships', 'community']
+const PILLARS: LifePillar[] = ['health', 'mind', 'purpose', 'relationships', 'finance', 'character', 'spirit']
 
 const BLUEPRINT_PHASES = [
   'Define the change and why it cannot be undone',

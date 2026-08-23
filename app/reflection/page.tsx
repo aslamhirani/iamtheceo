@@ -4,15 +4,15 @@ import { useState } from 'react'
 import { useAppState, today, generateId } from '@/lib/store'
 
 const PROMPTS = [
-  'Did you execute your primary practice today with full intention — or to cross it off a list? What is the difference you felt?',
-  'Where did your attention go that it should not have gone today? What pulled it?',
+  'Which of your 7 flourishing domains received the least attention today — and why did you allow that?',
+  'Did you act with full integrity today, or did you compromise your values even slightly? Describe the moment.',
+  'Was there a relationship that needed more of you today? What did you give, and what did you withhold?',
+  'Describe one moment today where you felt genuine meaning or purpose — not productivity, but meaning.',
+  'Where did your attention go that it should not have gone? What pulled it away from what matters?',
   'What decision did you make today out of habit, when deliberate choice was required?',
-  'Describe one moment today where you operated from your values. Describe one where you did not.',
-  'What is one thing that should have taken longer than you allowed it?',
   'If your most trusted mentor had watched your entire day, what would they note first?',
-  'What baseline did you protect today that no one else knows you protected?',
-  'What relationship did you invest in this week — and was the quality of that investment genuine?',
-  'Did you brush your teeth at a 45-degree angle — or did you brush to cross it off a list?',
+  'Did you experience any sense of gratitude, awe, or connection to something larger today?',
+  'What baseline habit did you protect today that no one else knows you protected?',
   'What friction did you avoid today that you should have leaned into?',
 ]
 
@@ -46,76 +46,55 @@ export default function Reflection() {
     setFrictionMode(true)
   }
 
-  const handleClose = () => {
-    setFrictionMode(false)
-    setSubmitted(false)
-    setResponse('')
-  }
-
   if (frictionMode) {
     return (
-      <div
-        className="fixed inset-0 flex flex-col items-center justify-center p-16"
-        style={{ background: 'var(--bg)', zIndex: 50 }}
-      >
+      <div style={{
+        position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', padding: '64px 48px',
+        background: 'var(--bg)', zIndex: 50,
+      }}>
         {!submitted ? (
           <>
-            <p className="sans text-xs tracking-widest uppercase mb-8" style={{ color: 'var(--muted)' }}>
-              High-Friction Reflection — {todayStr}
+            <p className="sans" style={{ fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 32 }}>
+              Reflection — {todayStr}
             </p>
-            <p className="text-xl leading-relaxed mb-10 max-w-xl text-center" style={{ maxWidth: 540 }}>
+            <p style={{ fontSize: 20, lineHeight: 1.6, marginBottom: 32, maxWidth: 520, textAlign: 'center' }}>
               {currentPrompt}
             </p>
             <textarea
-              className="w-full border p-4 text-sm resize-none mb-4"
               style={{
-                borderColor: 'var(--border)',
-                background: 'var(--bg)',
-                maxWidth: 540,
-                minHeight: 140,
+                width: '100%', maxWidth: 520, border: '1px solid var(--border)',
+                borderRadius: 8, padding: '14px 16px', fontSize: 14,
+                fontFamily: 'Georgia, serif', background: 'var(--bg-card)',
+                resize: 'none', minHeight: 140, lineHeight: 1.65,
               }}
-              placeholder="Write with precision. Do not summarize. Describe."
+              placeholder="Write with precision. Do not summarise. Describe."
               value={response}
               onChange={e => setResponse(e.target.value)}
               autoFocus
             />
-            <div className="flex gap-4" style={{ maxWidth: 540, width: '100%' }}>
+            <div style={{ display: 'flex', gap: 10, marginTop: 16, maxWidth: 520, width: '100%' }}>
               <button
                 onClick={handleSubmit}
                 disabled={!response.trim()}
-                className="sans text-xs border px-5 py-2 hover:opacity-70 disabled:opacity-30"
-                style={{ borderColor: 'var(--fg)' }}
+                className="btn btn-primary"
               >
-                Record
+                Save reflection
               </button>
-              <button
-                onClick={handleClose}
-                className="sans text-xs px-5 py-2 hover:opacity-70"
-                style={{ color: 'var(--muted)' }}
-              >
+              <button onClick={() => { setFrictionMode(false); setResponse(''); }} className="btn btn-ghost">
                 Exit
               </button>
             </div>
           </>
         ) : (
           <>
-            <p className="sans text-xs tracking-widest uppercase mb-8" style={{ color: 'var(--muted)' }}>Recorded</p>
-            <p className="sans text-lg font-light mb-10 text-center">Reflection captured.</p>
-            <div className="flex gap-4">
-              <button
-                onClick={handleNext}
-                className="sans text-xs border px-5 py-2 hover:opacity-70"
-                style={{ borderColor: 'var(--fg)' }}
-              >
-                Next Prompt
-              </button>
-              <button
-                onClick={handleClose}
-                className="sans text-xs px-5 py-2 hover:opacity-70"
-                style={{ color: 'var(--muted)' }}
-              >
-                Done
-              </button>
+            <p className="sans" style={{ fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 24 }}>
+              Recorded
+            </p>
+            <p className="sans" style={{ fontSize: 18, fontWeight: 300, marginBottom: 32 }}>Reflection captured.</p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={handleNext} className="btn btn-primary">Next prompt</button>
+              <button onClick={() => { setFrictionMode(false); setSubmitted(false); }} className="btn btn-ghost">Done</button>
             </div>
           </>
         )}
@@ -124,28 +103,29 @@ export default function Reflection() {
   }
 
   return (
-    <div className="p-12 max-w-3xl">
-      <p className="sans text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--muted)' }}>Module 3</p>
-      <h1 className="sans text-3xl font-light mb-2">Reflection</h1>
-      <p className="text-sm mb-10" style={{ color: 'var(--muted)' }}>
-        High-friction intentional prompts. Not checkboxes. The system locks the viewport into minimalist canvas mode to prevent passive engagement.
-      </p>
+    <div style={{ padding: '40px 48px', maxWidth: 720 }}>
+      <div style={{ marginBottom: 32 }}>
+        <p className="sans" style={{ fontSize: 12, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+          Reflection
+        </p>
+        <h1 className="sans" style={{ fontSize: 24, fontWeight: 300, marginBottom: 8 }}>Daily Reflection</h1>
+        <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>
+          Ten prompts drawn from the 7 flourishing domains. Not checkboxes — written responses only. The reflection mode locks the screen to remove distractions.
+        </p>
+      </div>
 
-      <div className="border p-8 mb-10" style={{ borderColor: 'var(--border)' }}>
-        <p className="sans text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--muted)' }}>Today&apos;s Prompt</p>
-        <p className="text-lg leading-relaxed mb-6">{currentPrompt}</p>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setFrictionMode(true)}
-            className="sans text-xs border px-4 py-2 hover:opacity-70"
-            style={{ borderColor: 'var(--fg)' }}
-          >
-            Enter Reflection Mode
+      <div className="card" style={{ padding: 28, marginBottom: 32 }}>
+        <p className="sans" style={{ fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 16 }}>
+          Today&apos;s Prompt
+        </p>
+        <p style={{ fontSize: 16, lineHeight: 1.7, marginBottom: 24 }}>{currentPrompt}</p>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setFrictionMode(true)} className="btn btn-primary">
+            Begin reflection
           </button>
           <button
             onClick={() => setPromptIndex(p => (p + 1) % PROMPTS.length)}
-            className="sans text-xs px-4 py-2 hover:opacity-70"
-            style={{ color: 'var(--muted)' }}
+            className="btn btn-ghost"
           >
             Different prompt
           </button>
@@ -153,34 +133,40 @@ export default function Reflection() {
       </div>
 
       {todayReflections.length > 0 && (
-        <div className="mb-8">
-          <p className="sans text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--muted)' }}>
-            Today&apos;s Reflections — {todayReflections.length}
+        <div style={{ marginBottom: 28 }}>
+          <p className="sans" style={{ fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 12 }}>
+            Today&apos;s Reflections ({todayReflections.length})
           </p>
-          <div className="flex flex-col gap-px" style={{ background: 'var(--border)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {todayReflections.map(r => (
-              <div key={r.id} className="p-6" style={{ background: 'var(--bg)' }}>
-                <p className="sans text-xs italic mb-3" style={{ color: 'var(--muted)' }}>&ldquo;{r.prompt}&rdquo;</p>
-                <p className="text-sm leading-relaxed">{r.response}</p>
+              <div key={r.id} className="card" style={{ padding: '16px 20px' }}>
+                <p style={{ fontSize: 13, color: 'var(--muted)', fontStyle: 'italic', marginBottom: 8 }}>&ldquo;{r.prompt}&rdquo;</p>
+                <p style={{ fontSize: 14, lineHeight: 1.7 }}>{r.response}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {state.reflections.length > todayReflections.length && (
+      {state.reflections.filter(r => r.date !== todayStr).length > 0 && (
         <div>
-          <p className="sans text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--muted)' }}>Prior Reflections</p>
-          <div className="flex flex-col gap-px" style={{ background: 'var(--border)' }}>
+          <p className="sans" style={{ fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 12 }}>
+            Past Reflections
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[...state.reflections]
               .filter(r => r.date !== todayStr)
               .reverse()
               .slice(0, 10)
               .map(r => (
-                <div key={r.id} className="p-5" style={{ background: 'var(--bg)' }}>
-                  <p className="sans text-xs mb-1" style={{ color: 'var(--muted)' }}>{r.date}</p>
-                  <p className="sans text-xs italic mb-2" style={{ color: 'var(--muted)' }}>&ldquo;{r.prompt.slice(0, 80)}...&rdquo;</p>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>{r.response.slice(0, 160)}{r.response.length > 160 ? '...' : ''}</p>
+                <div key={r.id} className="card" style={{ padding: '14px 20px' }}>
+                  <p className="sans" style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 4 }}>{r.date}</p>
+                  <p style={{ fontSize: 13, fontStyle: 'italic', color: 'var(--muted)', marginBottom: 6 }}>
+                    &ldquo;{r.prompt.slice(0, 80)}...&rdquo;
+                  </p>
+                  <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.6 }}>
+                    {r.response.slice(0, 160)}{r.response.length > 160 ? '...' : ''}
+                  </p>
                 </div>
               ))}
           </div>
