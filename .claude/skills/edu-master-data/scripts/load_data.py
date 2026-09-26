@@ -51,6 +51,9 @@ ZERO_IS_BLANK = [
     "Ed_created_at", "ed_updated_at", "college_created_at", "college_updated_at",
 ]
 
+SCHOOL_QUALITY = {"A": "Good (A/B)", "B": "Good (A/B)", "C": "Mediocre (C/D)", "D": "Mediocre (C/D)",
+                  "AK": "Aga Khan (AK/AKP)", "AKP": "Aga Khan (AK/AKP)", "Special Schools": "Special Schools"}
+
 DATE_COLS = ["Ed_created_at", "ed_updated_at", "college_created_at", "college_updated_at"]
 
 
@@ -116,6 +119,8 @@ def load(path=None, keep_pii=False):
     df["is_fmp_member"] = df["is_fmp"].eq("FMP")
     df["in_ak_vicinity"] = df["AK vicinity"].ne("#NON AK VICINITY")
     df["is_new_hr"] = df["Data Category"].eq("Data collection - New HR")
+    # Confirmed by data owner: A/B = good, C/D = mediocre, AK/AKP = Aga Khan school / pre-school.
+    df["school_quality"] = df["school_category"].map(SCHOOL_QUALITY)
 
     if not keep_pii:
         df = df.drop(columns=[c for c in PII_COLS if c in df.columns])

@@ -1,6 +1,6 @@
 ---
 name: edu-master-data
-description: Answers any question about the 2026-27 education master data, the youth census of ~21,000 children and young adults (ages 0–25). It covers schooling status, school category (A/B/C/D/AK), college enrolment, streams and degrees, emerging careers, migration, untraceable / not-studying / pending cases, LIG and FMP families, and RP/JP/Spoken-English assessment levels, broken down by cluster, region, local board or center. Use this skill whenever the user asks for counts, percentages, breakdowns, comparisons, lists, trends or insights from this data. Also use it when they mention a local board (e.g. North Mumbai, Hyderabad, Rajkot, Surat), a region code (WI, NS, NEG, SI, SS, CNEI), CONSO CAT, out-of-school youth, tertiary access, dropouts, or "the master data / raw data / census", even if they don't name the file.
+description: Answers any question about the 2026-27 education master data, the youth census of ~21,000 children and young adults (ages 0–25). It covers schooling status, school quality (good A/B, mediocre C/D, Aga Khan AK/AKP), college enrolment, streams and degrees, emerging careers, migration, untraceable / not-studying / pending cases, LIG and Family Mentorship Programme (FMP) families, and Reading Programme (RP), Jolly Phonics (JP) and Spoken English levels, broken down by cluster, region, local board or center. Use this skill whenever the user asks for counts, percentages, breakdowns, comparisons, lists, trends or insights from this data. Also use it when they mention a local board (e.g. North Mumbai, Hyderabad, Rajkot, Surat), a region code (WI, NS, NEG, SI, SS, CNEI), CONSO CAT, out-of-school youth, tertiary access, dropouts, or "the master data / raw data / census", even if they don't name the file.
 ---
 
 # Education master data analyst
@@ -26,7 +26,7 @@ The loader finds the CSV in this order: an explicit `load(path=...)`, then `$EDU
 `data/*.csv` inside this skill, then files in the uploads folder. If the user attached a newer file, pass its path.
 If nothing is found, ask the user to upload the CSV.
 
-It adds convenience booleans `is_lig`, `is_fmp_member`, `in_ak_vicinity`, `is_new_hr`.
+It adds convenience columns `is_lig`, `is_fmp_member`, `in_ak_vicinity`, `is_new_hr` and `school_quality` (Good / Mediocre / Aga Khan / Special Schools).
 
 ## Step 2: Understand the columns before you query
 
@@ -37,6 +37,13 @@ column, its values and counts, and the traps. Things that most often lead to wro
   covers the school portal. Most 19–25 year-olds show "Pending" there even when they're in college.
   `CONSO CAT` gives each person one consolidated status. The dictionary lists the standard roll-ups
   (in education / out of education / migrated / unknown).
+- **"Not studying" means `CONSO CAT == "#NOT STUDYING"` (confirmed dropouts/out of education).** The
+  programme team wants untraceable and migrated children kept **separate**. They're a tracing problem,
+  not a reason for being out of education. Show them (and pending/invalid "status unknown") as their own lines
+  beside the not-studying figure, and rank reasons only within #NOT STUDYING. Don't use the raw
+  `studying == "Not Studying"` column for this: it mixes in untraceable and invalid-reason cases.
+- **School quality.** A + B = good schools, C + D = mediocre schools, AK = Aga Khan Schools, AKP = Aga Khan
+  pre-schools. For quality questions, report these three groups (good / mediocre / Aga Khan).
 - **Current vs home location.** Default to `Current_Region`, `Current_Local_Board` and `Current_Center`.
   `Home_Region` uses different codes (WIN, NSA, SIN, SSA vs WI, NS, SI, SS).
 - **Multi-reason fields** (`Not_Studying_Reasons_Merged`, `college_not_studying_reason`) join multiple

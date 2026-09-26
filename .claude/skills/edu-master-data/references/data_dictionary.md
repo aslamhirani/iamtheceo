@@ -3,8 +3,8 @@
 One row = one young person (hr_id is unique). 20,943 rows, ages 0–25, academic year 2026-27.
 Counts below are from the September 2026 extract. Re-run `load_data.py profile` if the file changes.
 
-Items marked **(inferred)** are interpretations drawn from the data patterns. They have not been
-confirmed by the data owner. When one of these drives an answer, say so in a short note.
+Items marked **(confirmed)** were confirmed by the data owner (Sept 2026). Items marked **(inferred)** are
+interpretations drawn from the data patterns and have not been confirmed. When one of these drives an answer, say so in a short note.
 
 ## Contents
 1. Geography & center
@@ -22,16 +22,16 @@ confirmed by the data owner. When one of these drives an answer, say so in a sho
 
 | Column | Meaning | Values |
 |---|---|---|
-| Cluster Region | Top-level cluster | ROI 14,531 · SAU 6,412 (inferred: ROI = Rest of India, SAU = Saurashtra) |
+| Cluster Region | Top-level cluster | ROI 14,531 · SAU 6,412 (confirmed: ROI = Rest of India, SAU = Saurashtra) |
 | Current_Region | Region where the person lives now | WI, NS, NEG, SI, SS, CNEI |
 | Current_Local_Board | Local board (25) | North Mumbai, Hyderabad, Ahmedabad, Rajkot, Secunderabad, Surendranagar-Botad, South Mumbai, Surat, Vapi-Sanjan, Pune, Nagpur, Kutch, … |
 | Current_Center | Center / jamatkhana (361) | free text names |
 | Home_Region / Home_Local_Board / Home_Center | Registered "home" location | Home_Region uses **different codes**: WIN, NSA, NEG, SIN, SSA, CNEI. Map WIN↔WI, NSA↔NS, SIN↔SI, SSA↔SS before comparing current vs home |
 | AK vicinity | Nearest Aga Khan institution if close by | `#NON AK VICINITY` (14,480) or institution name, e.g. DJHS-Hyderabad, AKS Kompally (proposed), AKP Surendranagar, DJHS-Mumbai, AKP Botad, AKA Hyderabad, Outreach-Fidai girls |
-| Center Type | | CMC 15,393 · Non-CMC 4,253 · Hostel 1,297 |
+| Center Type | | CMC 15,393 · Non-CMC 4,253 · Hostel 1,297 (what CMC stands for is not yet confirmed. Use the code as-is) |
 
-Region codes (inferred): WI = Western India, NS = Northern Saurashtra, NEG = North-East Gujarat,
-SI = Southern India, SS = Southern Saurashtra, CNEI = Central/North/East India.
+Region codes (confirmed): WI = Western India, NS = Northern Saurashtra, NEG = Northern & Eastern Gujarat,
+SI = Southern India, SS = Southern Saurashtra, CNEI = Central, Northern & Eastern India.
 Default to **Current_*** columns for "where" questions. Use Home_* only when the user asks about home or migration.
 Comparing Current_Local_Board with Home_Local_Board shows internal movement.
 
@@ -43,7 +43,7 @@ Comparing Current_Local_Board with Home_Local_Board shows internal movement.
 | Age group | 0-2, 3-5, 6-12, 13-15, 16-18, 19-21, 22-25 (loader fixes Excel's "06-Dec"/"03-May") |
 | gender | M 10,941 · F 10,002 |
 | IS LIG → `is_lig` | LIG = Low Income Group (3,041) |
-| is_fmp → `is_fmp_member` | FMP 1,803 (inferred: a family/financial-support programme membership) |
+| is_fmp → `is_fmp_member` | FMP 1,803 (confirmed: family belongs to the Family Mentorship Programme) |
 | dob, phone_number_1, father_mobile_number, swb_pid, FMP Member ID | **PII — removed by the loader.** Phones are also corrupted (scientific notation like 9.19E+11) |
 
 ## 3. Data provenance & eligibility
@@ -65,7 +65,7 @@ Comparing Current_Local_Board with Home_Local_Board shows internal movement.
 | School_name / School_ID | 1,969 names. Group by School_ID when possible, since names have spelling variants |
 | curriculum | State Board, CBSE, ICSE, Pre-School, IGCSE, IB, College, Private Coaching, Special Schools |
 | medium | English 9,614 · Gujarati 199 |
-| school_category | A, B, C, D, AK, AKP, Special Schools (inferred: quality tier of school. A = top-tier, D = lowest; AK = Aga Khan school; AKP = Aga Khan pre-school) |
+| school_category | A, B, C, D, AK, AKP, Special Schools (confirmed: A and B = good schools; C and D = mediocre schools; AK = Aga Khan Schools; AKP = Aga Khan pre-schools). Standard roll-up: **Good = A + B**, **Mediocre = C + D**, **Aga Khan = AK + AKP**. A vs B and C vs D are not ranked against each other, so don't call A "best" |
 | standard | Current grade: Play Group, Nursery, JR.Kg, SR.Kg, 1st–12th, F.Y./S.Y./T.Y. Degree College, Diploma (Yr 1–3). Use `STANDARD_ORDER` in the loader for sorting |
 | Not_Studying_Reasons_Merged | Reason if not studying. Multi-reasons are joined by `" , "`. Split on that before counting reasons. Top: Too Young, Migrated Abroad, Migrated within the country, Untraceable, Contact Number Not Available, Completed Studies - Working, Dropout - Working |
 | ed_school_remarks | Free-text notes |
@@ -105,6 +105,9 @@ One status per person, combining school and tertiary outcomes. Use it for
 | #NOT APPLICABLE | 5 | |
 
 Useful roll-ups:
+- **Not studying (confirmed default):** `#NOT STUDYING` only. Report **#UNTRACEABLE**, **#MIGRATED** and
+  **#MIGRATED ABROAD** as *separate* lines next to it. Never fold them into the not-studying count or its
+  reasons ranking. Pending / invalid-reason cases are a separate "status unknown" line too.
 - **In education** = school categories + #ACCESSING SCHOOL + #ACCESSING TERTIARY (13,058)
 - **Out of education** = #NOT STUDYING
 - **Unknown / data gap** = #PENDING + #UNTRACEABLE + #INVALID REASON + #NOT ON PORTAL
@@ -117,9 +120,9 @@ known-status only excluding migrated/unknown). Different denominators give very 
 
 | Column | Values (age range) | Notes |
 |---|---|---|
-| RP Level | Grade Level 1,362, Foundation Level 805, Below Grade Level 174, Assessment Not Done 1,576, Not Eligible, Not Applicable (ages 6–12 assessed) | Inferred: reading/literacy programme |
+| RP Level | Grade Level 1,362, Foundation Level 805, Below Grade Level 174, Assessment Not Done 1,576, Not Eligible, Not Applicable (ages 6–12 assessed) | Confirmed: RP = Reading Programme |
 | RP Actual Level | At Level 1,362 / Below Level 979 (= Foundation + Below Grade) | Use for % at-level |
-| JP Level | Outstanding 114, Proficient 204, Beginner 152, Needs strengthening 351, Assessment not done 576 | Inferred: a younger-years/junior programme |
+| JP Level | Outstanding 114, Proficient 204, Beginner 152, Needs strengthening 351, Assessment not done 576 | Confirmed: JP = Jolly Phonics programme |
 | JP Actual Level | At Level 318 / Below Level 503 / Assessment not done 345 | |
 | JP Enrolled | Enrolled 1,346 / Not Enrolled 1,189 (ages 2–19; Not Enrolled is ages 3–5) | |
 | Spoken English Level | At Level 186 · Below Level 343 · Assessment not done 5,538 | Coverage is very low. Say so |
