@@ -1,0 +1,29 @@
+{
+  "skill_name": "edu-master-data",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "What percentage of our youth are currently in education (school or college)? Break it down by region.",
+      "expected_output": "Uses CONSO CAT roll-up (~13,058 of 20,943 = 62.4%), region table, states denominator, notes pending/unknown share.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "for the 19-25 age group in Hyderabad local board, how many are in college and what streams are they in? how many are in emerging careers?",
+      "expected_output": "Filter Current_Local_Board=Hyderabad & age 19-25, count #ACCESSING TERTIARY, stream breakdown, emerging vs non-emerging.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "What are the top reasons kids aged 6-18 are not studying? I need this for our board meeting next week.",
+      "expected_output": "Confirmed not-studying = CONSO CAT #NOT STUDYING (234 aged 6-18); reasons ranked only within that group; untraceable (181) and migrated (339) shown as separate lines; board-ready summary.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "are LIG kids going to worse schools than others? show me by region too",
+      "expected_output": "Uses school quality groups (Good A/B, Mediocre C/D, Aga Khan AK/AKP); LIG 24.7% good vs 53.2% non-LIG; 65.3% vs 40.0% mediocre; region breakdown.",
+      "files": []
+    }
+  ]
+}
